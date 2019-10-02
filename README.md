@@ -54,8 +54,8 @@ mywidget_compat2() {
     __bindfunc_compat_wrapper mywidget_zsh
 }
 
-bindfunc '\C-i' "mywidget_compat"  
-bindfunc '\C-o' "mywidget_compat2"  
+bindfunc '\C-o' "mywidget_compat"  
+bindfunc '\C-p' "mywidget_compat2"  
 ```
 
-Just run `source example.sh` in your terminal and press `Control-I`/`Control-O` to see it in practice.
+Just run `source example.sh` in your terminal and press `Control-O` or `Control-P` to see it in practice.
