@@ -1,6 +1,6 @@
 # bash-zsh-compat-widgets
 
-This project enables you to use the same fuction as both:
+This project enables you to use the same function as both:
 
 - Zsh ZLE widget
 - Bash readline "widget"
