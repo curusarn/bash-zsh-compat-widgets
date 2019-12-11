@@ -22,7 +22,8 @@ bindfunc KEY_SEQUENCE SHELL_FUNCTION
 If you need to be able to revert the binding later do it like this:
 
 ```sh
-bindfunc --unbind KEY_SEQUENCE SHELL_FUNCTION
+bindfunc --revert KEY_SEQUENCE SHELL_FUNCTION
+# using --revert options sets _bindfunc_revert variable to a command that can be evaluated to revert the bindfunc call
 revert_bind=$_bindfunc_revert
 
 # do whatever
@@ -75,8 +76,8 @@ bindfunc '\C-p' "mywidget_compat2"
 
 Just run `source example.sh` in your terminal and press `Control-O` or `Control-P` to see it in practice.
 
-There is a second `example_unbind.sh` that shows how you can revert the bindings.
+There is a second `example_revert.sh` that shows how you can revert the bindings.
 
-1) activate the bindings by running `source example_unbind.sh`
+1) activate the bindings by running `source example_revert.sh`
 1) press `Control-R` or `Control-P` to use them
 1) revert the bindings with `eval $revert_ctrl_r` and `eval $revert_ctrl_p`
