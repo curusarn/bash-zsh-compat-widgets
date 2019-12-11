@@ -37,9 +37,9 @@ __bindfunc_compat_wrapper() {
 
 # unified way to bind functions as zsh zle widgets and bash readline "widgets"
 bindfunc() {
-    local unbind=0
-    if [ "$1" = "-u" ] || [ "$1" = "--unbind" ]; then
-        unbind=1
+    local revert=0
+    if [ "$1" = "-r" ] || [ "$1" = "--revert" ]; then
+        revert=1
         shift
     fi
     if [ "$#" -lt 2 ] || [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
@@ -47,7 +47,7 @@ bindfunc() {
         echo "USAGE: bindfunc [OPTIONS] key_sequence widget_name [OPTIONS_FOR_bind_AND/OR_bindkey]" >&2
         echo "" >&2
         echo "OPTIONS:" >&2
-        echo "    -u|--unbind" >&2
+        echo "    -r|--revert" >&2
         echo "        Set '_bindfunc_revert' variable to a command that can be evaluated to revert the effect of this bindfunc call." >&2
         echo "    -h|--help" >&2
         echo "        Show this help." >&2
@@ -60,7 +60,7 @@ bindfunc() {
 
     if [ -n "$ZSH_VERSION" ]; then
         # zsh
-        if [ "$unbind" -eq 1 ]; then
+        if [ "$revert" -eq 1 ]; then
             local original_bind
             original_bind=$(bindkey "$keyseq")
             if echo "${#original_bind}" | grep 'undefined-key$' -q; then
@@ -75,7 +75,7 @@ bindfunc() {
         bindkey "$keyseq" "$func" "$@"
     elif [ -n "$BASH_VERSION" ]; then
         # bash
-        if [ "$unbind" -eq 1 ]; then
+        if [ "$revert" -eq 1 ]; then
             local original_bind
             # NOTE: bash bind list will sometimes contain inactive bindings and/or multiple bindings for the same key sequence
             # I've made a SO post about this: https://stackoverflow.com/questions/59292248/why-does-bind-x-show-inactive-bindings
