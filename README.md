@@ -19,9 +19,24 @@ Use it like this:
 bindfunc KEY_SEQUENCE SHELL_FUNCTION
 ```
 
+If you need to be able to revert the binding later do it like this:
+
+```sh
+bindfunc --unbind KEY_SEQUENCE SHELL_FUNCTION
+revert_bind=$_bindfunc_revert
+
+# do whatever
+
+eval $revert_bind
+```
+
+*I know what you are thinking. Using `eval` is ugly and dangerous but just as in the case of `eval $(ssh-agent)` using `eval` is the best solution here.*
+
+You can find more examples at the bottom of this page.
+
 ## Compatibility wrapper
 
-Very simple compatibility layer that makes it possible to use simple zsh zle widgets in bash and all bash "widgets" in zsh.
+Part of this project is a very simple compatibility layer that makes it possible to use simple zsh zle widgets in bash and all bash "widgets" in zsh.
 
 Use it like this:
 
@@ -59,3 +74,9 @@ bindfunc '\C-p' "mywidget_compat2"
 ```
 
 Just run `source example.sh` in your terminal and press `Control-O` or `Control-P` to see it in practice.
+
+There is a second `example_unbind.sh` that shows how you can revert the bindings.
+
+1) activate the bindings by running `source example_unbind.sh`
+1) press `Control-R` or `Control-P` to use them
+1) revert the bindings with `eval $revert_ctrl_r` and `eval $revert_ctrl_p`
