@@ -23,7 +23,8 @@ If you need to be able to revert the binding later do it like this:
 
 ```sh
 bindfunc --revert KEY_SEQUENCE SHELL_FUNCTION
-# using --revert options sets _bindfunc_revert variable to a command that can be evaluated to revert the bindfunc call
+# using --revert options sets _bindfunc_revert variable to a command
+#         that can be evaluated to revert the bindfunc call
 revert_bind=$_bindfunc_revert
 
 # do whatever
