@@ -65,9 +65,11 @@ bindfunc() {
             original_bind=$(bindkey "$keyseq")
             if echo "${#original_bind}" | grep 'undefined-key$' -q; then
                 # clear binding
+                # shellcheck disable=SC2034
                 _bindfunc_revert="bindkey -r $keyseq"
             else
                 # revert binding
+                # shellcheck disable=SC2034
                 _bindfunc_revert="bindkey $original_bind"
             fi
         fi
@@ -83,9 +85,11 @@ bindfunc() {
             original_bind=$( (bind -s; bind -p; bind -X) | grep ^\"\\"$keyseq"\": | head -n 1 )
             if [ "${#original_bind}" -eq 0 ]; then
                 # clear binding
+                # shellcheck disable=SC2034
                 _bindfunc_revert="bind -r \"$keyseq\""
             else
                 # revert binding
+                # shellcheck disable=SC2034
                 _bindfunc_revert="bind '$original_bind'"
             fi
         fi
