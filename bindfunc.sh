@@ -82,7 +82,7 @@ bindfunc() {
             # NOTE: bash bind list will sometimes contain inactive bindings and/or multiple bindings for the same key sequence
             # I've made a SO post about this: https://stackoverflow.com/questions/59292248/why-does-bind-x-show-inactive-bindings
             # we just take the first result and hope for the best
-            original_bind=$( (bind -s; bind -p; bind -X) | grep -F \"\\"$keyseq"\": | head -n 1 )
+            original_bind=$( (bind -s; bind -p; bind -X) | grep -F "\"$keyseq\":" | head -n 1 )
             if [ "${#original_bind}" -eq 0 ]; then
                 # clear binding
                 # shellcheck disable=SC2034
