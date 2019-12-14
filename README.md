@@ -5,6 +5,8 @@ This project enables you to use the same function as both:
 - Zsh ZLE widget
 - Bash readline "widget"
 
+NOTE: You to have bash 4.3+
+
 ## Bindfunc
 
 Bash uses `bind -x ...` to bind "widgets".
