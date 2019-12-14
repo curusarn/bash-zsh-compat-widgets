@@ -5,7 +5,6 @@ This project enables you to use the same function as both:
 - Zsh ZLE widget
 - Bash readline "widget"
 
-NOTE: You to have bash 4.3+
 
 ## Bindfunc
 
@@ -84,3 +83,10 @@ There is a second `example_revert.sh` that shows how you can revert the bindings
 1) activate the bindings by running `source example_revert.sh`
 1) press `Control-R` or `Control-P` to use them
 1) revert the bindings with `eval $revert_ctrl_r` and `eval $revert_ctrl_p`
+
+## Dependencies
+
+bash 4.3+
+
+Pretty much only OS that ships with bash older than this is macOS with bash 3.2.57
+ 
