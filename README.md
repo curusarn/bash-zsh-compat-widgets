@@ -90,3 +90,4 @@ bash 4.3+
 
 Pretty much only OS that ships with bash older than this is macOS with bash 3.2.57
  
+zsh supports widgets since forever
