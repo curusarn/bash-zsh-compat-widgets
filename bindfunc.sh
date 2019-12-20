@@ -38,8 +38,17 @@ __bindfunc_compat_wrapper() {
 # unified way to bind functions as zsh zle widgets and bash readline "widgets"
 bindfunc() {
     local revert=0
+    local vim_cmd_mode=0
+    if [ "$1" = "-m" ] || [ "$1" = "--vim-cmd" ]; then
+        vim_cmd_mode=1
+        shift
+    fi
     if [ "$1" = "-r" ] || [ "$1" = "--revert" ]; then
         revert=1
+        shift
+    fi
+    if [ "$1" = "-m" ] || [ "$1" = "--vim-cmd" ]; then
+        vim_cmd_mode=1
         shift
     fi
     if [ "$#" -lt 2 ] || [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
@@ -58,7 +67,7 @@ bindfunc() {
     local func=$2
     shift 2
 
-    if [ -n "$ZSH_VERSION" ]; then
+    if [ -n "${ZSH_VERSION-}" ]; then
         # zsh
         if [ "$revert" -eq 1 ]; then
             local original_bind
@@ -74,8 +83,12 @@ bindfunc() {
             fi
         fi
         zle -N "$func" "$func"
-        bindkey "$keyseq" "$func" "$@"
-    elif [ -n "$BASH_VERSION" ]; then
+        if [ "$vim_cmd_mode" -eq 1 ]; then
+            bindkey -M vicmd "$keyseq" "$func" "$@"
+        else
+            bindkey "$keyseq" "$func" "$@"
+        fi
+    elif [ -n "${BASH_VERSION-}" ]; then
         # bash
         if [ "$revert" -eq 1 ]; then
             local original_bind
@@ -95,7 +108,11 @@ bindfunc() {
         fi
 
         # bind -r "$keyseq"
-        bind -x "\"$keyseq\": $func" "$@"
+        if [ "$vim_cmd_mode" -eq 1 ]; then
+            bind -m vi-command -x "\"$keyseq\": $func" "$@"
+        else
+            bind -x "\"$keyseq\": $func" "$@"
+        fi
     else
         echo "bindfunc ERROR: unrecognized shell" >&2
     fi
