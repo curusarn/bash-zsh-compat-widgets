@@ -20,3 +20,5 @@ mywidget_compat2() {
 
 bindfunc '\C-o' "mywidget_compat"  
 bindfunc '\C-p' "mywidget_compat2"  
+
+echo "Try pressing Control+O and Control+P"
