@@ -21,7 +21,7 @@ source bindfunc.sh
 bindfunc KEY_SEQUENCE SHELL_FUNCTION
 ```
 
-When you need a binding for a specific keymap (e.g. vi mode) use it like this:
+When you need binding for a specific keymap (e.g. vi mode) use `-m`/`-M` option with zsh or bash keymap:
 
 ```sh
 source bindfunc.sh
