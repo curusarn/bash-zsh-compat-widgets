@@ -17,12 +17,21 @@ Zsh uses `zle -N ...` and then `keybind ...` to bind widgets.
 Use it like this:
 
 ```sh
+source bindfunc.sh
 bindfunc KEY_SEQUENCE SHELL_FUNCTION
+```
+
+When you need a binding for a specific keymap (e.g. vi mode) use it like this:
+
+```sh
+source bindfunc.sh
+bindfunc -M vi-command KEY_SEQUENCE SHELL_FUNCTION
 ```
 
 If you need to be able to revert the binding later do it like this:
 
 ```sh
+source bindfunc.sh
 bindfunc --revert KEY_SEQUENCE SHELL_FUNCTION
 # using --revert options sets _bindfunc_revert variable to a command
 #         that can be evaluated to revert the bindfunc call
@@ -83,6 +92,8 @@ There is a second `example_revert.sh` that shows how you can revert the bindings
 1) activate the bindings by running `source example_revert.sh`
 1) press `Control-R` or `Control-P` to use them
 1) revert the bindings with `eval $revert_ctrl_r` and `eval $revert_ctrl_p`
+
+There is yet another example `example_keymaps.sh` that shows how to bind to a specific keymap.
 
 ## Dependencies
 
