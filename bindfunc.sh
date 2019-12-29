@@ -61,6 +61,8 @@ bindfunc() {
         echo "        Set '_bindfunc_revert' variable to a command that can be evaluated to revert the effect of this bindfunc call." >&2
         echo "    -m KEYMAP|-M KEYMAP" >&2
         echo "        Specify keymap to use when binding. Accepts both zsh and bash keymap keywords." >&2
+        echo "        Supported keymaps: emacs emacs-standard vicmd vi-command vi-move vi viins vi-insert (many of these are equivalent)" >&2
+        echo "        Unsupported keymaps can be added if you need them - please create an issue: https://github.com/curusarn/bash-zsh-compat-widgets/issues" >&2
         echo "    -h|--help" >&2
         echo "        Show this help." >&2
         return 1
@@ -70,24 +72,43 @@ bindfunc() {
     local func=$2
     shift 2
 
-    # translate keymaps
-    # zsh
-    # command     emacs       isearch     listscroll  main        menuselect  .safe       vicmd       viins       viopp       visual
-    # bash
-    # emacs           emacs-ctlx      emacs-meta      emacs-standard  vi              vi-command      vi-insert       vi-move
     local zsh_keymap
     local bash_keymap
     if [ "$keymap" != "" ]; then
+        # determine zsh and bash keymap variant for passed keymap
         case "$keymap" in
-            vicmd|vi-command)
+            # zsh: emacs
+            # bash: emacs emacs-standard  
+            emacs|emacs-standard)
+                zsh_keymap=emacs
+                bash_keymap=emacs
+            ;;
+            # zsh: vicmd
+            # bash: vi-command vi-move vi
+            vicmd|vi-command|vi-move|vi)
                 zsh_keymap=vicmd
                 bash_keymap=vi-command
             ;;
+            # zsh: viins
+            # bash: vi-insert
             viins|vi-insert)
                 zsh_keymap=viins
                 bash_keymap=vi-insert
             ;;
-            # TODO: add all modes
+            # zsh unhandled
+            command|isearch|listscroll|main|menuselect|.safe|viopp|visual)
+                # Existing but unhandled zsh keymap - plase create an issue
+                echo "ERROR: Unhandled zsh keymap in -m/-M option - the keymap exists in zsh but it is not supported by bindfunc - please create an issue: https://github.com/curusarn/bash-zsh-compat-widgets/issues"
+                echo "Run bindfunc -h|--help to see usage"
+                return 1
+            ;;
+            # bash unhandled
+            emacs-ctlx|emacs-meta)
+                # Existing but unhandled bash keymap - plase create an issue
+                echo "ERROR: Unhandled bash keymap in -m/-M option - the keymap exists in bash but it is not supported by bindfunc - please create an issue: https://github.com/curusarn/bash-zsh-compat-widgets/issues"
+                echo "Run bindfunc -h|--help to see usage"
+                return 1
+            ;;
             *)
                 # TODO: show full help
                 echo "ERROR: Unknown keymap in -m/-M option - please provide zsh or bash keymaps"
