@@ -38,34 +38,64 @@ __bindfunc_compat_wrapper() {
 # unified way to bind functions as zsh zle widgets and bash readline "widgets"
 bindfunc() {
     local revert=0
-    local vim_cmd_mode=0
-    if [ "$1" = "-m" ] || [ "$1" = "--vim-cmd" ]; then
-        vim_cmd_mode=1
-        shift
-    fi
-    if [ "$1" = "-r" ] || [ "$1" = "--revert" ]; then
+    local keymap=""
+    if [ "${1-}" = "-r" ] || [ "${1-}" = "--revert" ]; then
         revert=1
         shift
     fi
-    if [ "$1" = "-m" ] || [ "$1" = "--vim-cmd" ]; then
-        vim_cmd_mode=1
+    if [ "${1-}" = "-m" ] || [ "${1-}" = "-M" ]; then
+        shift
+        keymap=${1-}
+        shift
+    fi
+    if [ "${1-}" = "-r" ] || [ "${1-}" = "--revert" ]; then
+        revert=1
         shift
     fi
     if [ "$#" -lt 2 ] || [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
         echo "This is bindfunc - common wrapper for bash bind and zsh binkey" >&2
-        echo "USAGE: bindfunc [OPTIONS] key_sequence widget_name [OPTIONS_FOR_bind_AND/OR_bindkey]" >&2
+        echo "USAGE: bindfunc [OPTIONS] key_sequence widget_name [OPTIONS_FOR_bind_AND_bindkey]" >&2
         echo "" >&2
         echo "OPTIONS:" >&2
         echo "    -r|--revert" >&2
         echo "        Set '_bindfunc_revert' variable to a command that can be evaluated to revert the effect of this bindfunc call." >&2
+        echo "    -m KEYMAP|-M KEYMAP" >&2
+        echo "        Specify keymap to use when binding. Accepts both zsh and bash keymap keywords." >&2
         echo "    -h|--help" >&2
         echo "        Show this help." >&2
-        return
+        return 1
     fi
 
     local keyseq=$1
     local func=$2
     shift 2
+
+    # translate keymaps
+    # zsh
+    # command     emacs       isearch     listscroll  main        menuselect  .safe       vicmd       viins       viopp       visual
+    # bash
+    # emacs           emacs-ctlx      emacs-meta      emacs-standard  vi              vi-command      vi-insert       vi-move
+    local zsh_keymap
+    local bash_keymap
+    if [ "$keymap" != "" ]; then
+        case "$keymap" in
+            vicmd|vi-command)
+                zsh_keymap=vicmd
+                bash_keymap=vi-command
+            ;;
+            viins|vi-insert)
+                zsh_keymap=viins
+                bash_keymap=vi-insert
+            ;;
+            # TODO: add all modes
+            *)
+                # TODO: show full help
+                echo "ERROR: Unknown keymap in -m/-M option - please provide zsh or bash keymaps"
+                echo "Run bindfunc -h|--help to see usage"
+                return 1
+            ;;
+        esac
+    fi
 
     if [ -n "${ZSH_VERSION-}" ]; then
         # zsh
@@ -83,10 +113,10 @@ bindfunc() {
             fi
         fi
         zle -N "$func" "$func"
-        if [ "$vim_cmd_mode" -eq 1 ]; then
-            bindkey -M vicmd "$keyseq" "$func" "$@"
-        else
+        if [ "$keymap" = "" ]; then
             bindkey "$keyseq" "$func" "$@"
+        else
+            bindkey -M $zsh_keymap "$keyseq" "$func" "$@"
         fi
     elif [ -n "${BASH_VERSION-}" ]; then
         # bash
@@ -108,12 +138,13 @@ bindfunc() {
         fi
 
         # bind -r "$keyseq"
-        if [ "$vim_cmd_mode" -eq 1 ]; then
-            bind -m vi-command -x "\"$keyseq\": $func" "$@"
-        else
+        if [ "$keymap" = "" ]; then
             bind -x "\"$keyseq\": $func" "$@"
+        else
+            bind -m $bash_keymap -x "\"$keyseq\": $func" "$@"
         fi
     else
-        echo "bindfunc ERROR: unrecognized shell" >&2
+        echo "bindfunc ERROR: Unrecognized shell" >&2
+        return 1
     fi
 }
