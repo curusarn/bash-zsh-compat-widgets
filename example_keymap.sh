@@ -18,7 +18,7 @@ mywidget_compat2() {
     __bindfunc_compat_wrapper mywidget_zsh
 }
 
-bindfunc '\C-o' "mywidget_compat"  
-bindfunc '\C-p' "mywidget_compat2"  
+bindfunc -m vicmd '\C-o' "mywidget_compat"  
+bindfunc -M vi-command '\C-p' "mywidget_compat2"  
 
-echo "Try pressing Control+O and Control+P"
+echo "Switch to vim command mode and try pressing Control+O and Control+P"
